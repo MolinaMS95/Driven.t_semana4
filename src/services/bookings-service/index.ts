@@ -23,9 +23,24 @@ async function createBooking(userId: number, roomId: number) {
   return booking.id;
 }
 
+async function changeBooking(roomId: number, bookingId: number) {
+  const booking = await bookingsRepository.findBookingById(bookingId);
+  if(!booking) throw notFoundError();
+
+  const room = await roomsRepository.findRoomsById(roomId);
+  if(!room) throw notFoundError();
+
+  const roomBookings = await bookingsRepository.countBookings(roomId);
+  if(room.capacity === roomBookings) throw cannotBookError();
+
+  const newBooking = await bookingsRepository.alterBooking(bookingId, roomId);
+  return newBooking.id;
+}
+
 const bookingsService = {
   findBooking,
   createBooking,
+  changeBooking
 };
 
 export default bookingsService;
