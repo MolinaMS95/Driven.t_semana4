@@ -31,10 +31,11 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
 export async function updateBooking(req: AuthenticatedRequest, res: Response) {
   const { roomId }: { roomId: number } = req.body;
   const { bookingId } = req.params;
+  const { userId } = req;
 
   try{
-    const newBookingId = await bookingsService.changeBooking(roomId, Number(bookingId));
-    return res.status(httpStatus.OK).send(newBookingId);
+    const newBookingId = await bookingsService.changeBooking(roomId, Number(bookingId), userId);
+    return res.status(httpStatus.OK).send({ newBookingId });
   } catch (error) {
     if (error.name === "NotFoundError") {
       return res.sendStatus(httpStatus.NOT_FOUND);

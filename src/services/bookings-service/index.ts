@@ -23,9 +23,9 @@ async function createBooking(userId: number, roomId: number) {
   return booking.id;
 }
 
-async function changeBooking(roomId: number, bookingId: number) {
-  const booking = await bookingsRepository.findBookingById(bookingId);
-  if(!booking) throw notFoundError();
+async function changeBooking(roomId: number, bookingId: number, userId: number) {
+  const booking = await bookingsRepository.findBookingByUserId(userId);
+  if(!booking || booking.id !== bookingId) throw cannotBookError();
 
   const room = await roomsRepository.findRoomsById(roomId);
   if(!room) throw notFoundError();
